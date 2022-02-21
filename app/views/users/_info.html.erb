@@ -1,0 +1,42 @@
+<table class='table'>
+  <tr><%= attachment_image_tag(user, :profile_image, :fill, 100, 100, fallback: "no_image.jpg") %></tr>
+  <tr>
+	  <th>name</th>
+	  <th><%= user.name %></th>
+  </tr>
+  <tr>
+	  <th>introduction</th>
+	  <th><%= user.introduction %></th>
+  </tr>
+  <tr>
+    <th>follows</th>
+    <th><%= link_to user.followings.count, user_followings_path(user) %></th>
+  </tr>
+  <tr>
+    <th>followers</th>
+    <th><%= link_to user.followers.count, user_followers_path(user) %></th>
+  </tr>
+  <tr>
+    <th>
+      <%# if user == current_user %>
+      <% if !(user.name) == "guestuser" %>
+        <%= link_to '',edit_user_path(user),class: "btn btn-outline-secondary btn-block fas fa-user-cog edit_user_#{user.id}" %>
+      <% else %>
+        <% if current_user.following?(user) %>
+          <%= link_to user_relationships_path(user.id), method: :delete do %>
+            <button class="btn btn-danger">フォロー外す</button>
+          <% end %>
+        <% else %>
+          <%= link_to user_relationships_path(user.id), method: :post do %>
+            <button class="btn btn-primary">フォローする</button>
+          <% end %>
+        <% end %>
+      <% end %>
+    </th>
+    <th>
+      <% if current_user != user && current_user.following?(user) && user.following?(current_user) %>
+        <%= link_to 'chatを始める', room_path(user.id), class: "ml-3" %>
+      <% end %>
+    </th>
+  </tr>
+</table>
